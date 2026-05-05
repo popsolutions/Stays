@@ -1,0 +1,19 @@
+This repository's hardware design files (schematics, layouts, gerbers,
+BOMs, and other CAD artefacts) are licensed under the CERN Open Hardware
+Licence Version 2 — Strongly Reciprocal (CERN-OHL-S v2).
+
+The full license text is at:
+https://ohwr.org/cern_ohl_s_v2.txt
+
+Software contributions (bring-up scripts, drivers, build glue) are
+licensed under the Apache License, Version 2.0:
+https://www.apache.org/licenses/LICENSE-2.0
+
+Documentation contributions (Markdown files, design notes, ADRs) are
+licensed under Creative Commons Attribution-ShareAlike 4.0 International:
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Each file's specific license is identified by an SPDX-License-Identifier
+header.
+
+Copyright (c) 2026 PopSolutions Cooperative.

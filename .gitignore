@@ -1,0 +1,17 @@
+# KiCad build artefacts
+*.bak
+*.kicad_pcb-bak
+*~
+*.lck
+gerbers/
+fp-info-cache
+*-cache.lib
+
+# Python venvs / caches
+.venv/
+__pycache__/
+*.pyc
+
+# Editor
+.vscode/
+.idea/

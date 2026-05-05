@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: CC-BY-SA-4.0
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  docs-lint:
+    name: Docs / ADR sanity
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify ADR files have status
+        run: |
+          for f in docs/adr/*.md; do
+            grep -q '\*\*Status:\*\*' "$f" || { echo "$f missing **Status:**" ; exit 1; }
+          done
+      - name: Verify SPDX license identifier
+        run: |
+          shopt -s globstar
+          for f in **/*.md docs/**/*.md; do
+            [ -f "$f" ] || continue
+            grep -q "SPDX-License-Identifier" "$f" || { echo "$f missing SPDX header" ; exit 1; }
+          done
