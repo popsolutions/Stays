@@ -2,7 +2,7 @@
 
 # ADR-001 — FPGA target for the bootstrap PCB
 
-**Status:** Accepted (2026-05-05)
+**Status:** Accepted (amended 2026-05-06 per LiteDRAM ECP5 recon — bandwidth section)
 
 ## Context
 
@@ -87,10 +87,36 @@ moves forward in lockstep with the open FPGA ecosystem maturing:
 - **DDR3, not DDR4.** When migrating to silicon, LiteDRAM config changes
   (DDR3 PHY → DDR4 PHY); the AXI4 boundary is identical. No RTL change
   to the rest of the system.
-- **Lower bandwidth.** DDR3-1600 single channel = 12.8 GB/s peak vs
-  DDR4-3200 dual = 51.2 GB/s. Sufficient for inference of <1B parameter
-  models in rev A; the larger Sails get more memory bandwidth in their
-  silicon target without needing it in this prototype.
+- **Lower bandwidth (three numbers, three contexts — amended 2026-05-06).**
+  The DDR3-1600 SO-DIMM raw spec is *not* what rev-A delivers on an
+  ECP5 + open-toolchain stack. Per the LiteDRAM ECP5 recon
+  (`docs/upstream-contributions/2026-05-06-litedram-ecp5.md`), three
+  bandwidth numbers must be tracked separately:
+  - **Theoretical ceiling:** 1600 MT/s × 64 bits = **12.8 GB/s**
+    (DDR3-1600 SO-DIMM raw spec; original ADR claim, kept here only
+    as the upper bound of what the *module* itself can sustain).
+  - **Open-toolchain PHY cap:** **800 MT/s = 6.4 GB/s** on x64
+    (the maximum advertised by `litedram/phy/ecp5ddrphy.py`'s file
+    header — "DDR3: 800 MT/s"; this is the upper bound of what the
+    *open* PHY exercises). Going above this would require Lattice
+    Diamond's closed PHY tooling, which the project's open-FPGA
+    mission rejects (see `project_mission_and_open_fpga_commitment.md`
+    and "Why GbE for rev-A" below for the analogous PCIe rejection).
+  - **Realistic on rev-A:** **1.5-2.4 GB/s** (192-300 MT/s × 8 bytes),
+    cited from the three production reference designs that ship the
+    ECP5+DDR3 combination today: OrangeCrab (48 MHz sys / 96 MHz
+    DRAM = 192 MT/s = 1.536 GB/s), Trellis Board and Lattice
+    Versa-ECP5 (75 MHz sys / 150 MHz DRAM = 300 MT/s = 2.4 GB/s).
+    No production reference design we can cite runs the PHY at the
+    800 MT/s header ceiling. Rev-A bring-up should plan against
+    this range, not against 12.8 GB/s.
+
+  This is still **sufficient for inference of <1B-parameter models
+  in rev A** (TinyLlama-1.1B token streaming is bandwidth-bound far
+  below 1.5 GB/s), and the silicon Sails get more memory bandwidth
+  in their tape-out target without needing it in this prototype.
+  The DDR4-3200 dual-channel comparison (51.2 GB/s) is a *future-rev*
+  reference, not a rev-A claim.
 - **GbE not PCIe for rev A.** 1 Gbps host link instead of PCIe's
   GB/s class. Adequate for sub-1B-parameter inference (TinyLlama-1.1B
   token-streaming workloads). Larger workloads wait for rev B's PCIe
@@ -174,3 +200,91 @@ rev-A blocker.
 - **2026-05-05** — Form factor: implicit M.2 22110 → explicit
   Mini-ITX SBC (170 mm × 170 mm) for rev A. M.2 returns in rev B
   as a plug-in compute module. See popsolutions/Stays issue #16.
+- **2026-05-06** — Bandwidth claim: the original "DDR3-1600 single
+  channel = 12.8 GB/s peak" line was theoretical-only and not
+  achievable on the ECP5 + open-toolchain stack. Amended to track
+  three separate numbers (theoretical 12.8 GB/s / open-PHY cap
+  6.4 GB/s / realistic rev-A 1.5-2.4 GB/s). See "Amendment
+  2026-05-06 (bandwidth realism)" section below, popsolutions/MAST
+  issue #32, and the LiteDRAM ECP5 recon (Stays PR #26).
+
+## Amendment 2026-05-06 (bandwidth realism)
+
+### What was amended
+
+The "Lower bandwidth" bullet in the *Trade-offs accepted* section
+(formerly: "DDR3-1600 single channel = 12.8 GB/s peak vs DDR4-3200
+dual = 51.2 GB/s") has been replaced with **three labeled numbers**
+in three contexts:
+
+1. **Theoretical ceiling — 12.8 GB/s** (1600 MT/s × 64 bits, raw
+   DDR3-1600 SO-DIMM spec).
+2. **Open-toolchain PHY cap — 6.4 GB/s** (800 MT/s × 64 bits, per
+   `litedram/phy/ecp5ddrphy.py`'s "DDR3: 800 MT/s" header — i.e. the
+   upper bound the open PHY has been *exercised* at, not just speced
+   for).
+3. **Realistic on rev-A — 1.5-2.4 GB/s** (192-300 MT/s × 64 bits,
+   matching the three open-toolchain ECP5+DDR3 production reference
+   designs: OrangeCrab @ 192 MT/s, Trellis Board and Lattice
+   Versa-ECP5 @ 300 MT/s).
+
+The Status line was updated from "Accepted (2026-05-05)" to
+"Accepted (amended 2026-05-06 per LiteDRAM ECP5 recon — bandwidth
+section)".
+
+### Why (recon discovery)
+
+Agent 4's day-1 LiteDRAM ECP5 reconnaissance (Stays PR #26, merged
+2026-05-06) reviewed every ECP5+DDR3 production reference design in
+`litex-hub/litex-boards` and surveyed `litedram/phy/ecp5ddrphy.py`
+upstream. Two findings landed that this ADR did not previously
+acknowledge:
+
+- The PHY header advertises 800 MT/s, **half** the rate the original
+  ADR-001 bandwidth bullet implied. Going above the header would
+  require Lattice Diamond's closed PHY tooling.
+- **No production reference design runs at the 800 MT/s header
+  ceiling.** All three (OrangeCrab, Trellis Board, Versa-ECP5) run
+  at 192-300 MT/s, i.e. 1.5-2.4 GB/s, on the open toolchain.
+
+Per `project_mission_and_open_fpga_commitment.md`
+("*precarious-but-available beats premium-but-locked*"), the project
+**rejects the closed-PHY path** that would bridge between the
+open-PHY cap and the theoretical SO-DIMM ceiling. That makes the
+production-reference range — not the theoretical 12.8 GB/s — the
+load-bearing rev-A bandwidth budget. The original number was not a
+bug; it was a recon gap that surfaced before silicon, which is the
+cheapest possible moment to correct it.
+
+The mission frame also requires acknowledging that this is a
+trade-off accepted in service of *speed of access*: 1.5-2.4 GB/s is
+sufficient for the rev-A reference workload (TinyLlama-1.1B token
+streaming, ≪ 1 GB/s sustained), while a closed-PHY 12.8 GB/s rev-A
+would be unshippable by anyone without a Lattice licence. The Sails
+roadmap (rev B → DDR4 / rev C → DDR5 / beyond → DDR6) advances the
+realistic ceiling in lockstep with the open ecosystem; we do not
+quietly assume the theoretical one.
+
+### Reference
+
+- **Source-of-truth recon:**
+  [`docs/upstream-contributions/2026-05-06-litedram-ecp5.md`](../upstream-contributions/2026-05-06-litedram-ecp5.md)
+  — §"DDR3 SO-DIMM compatibility" tabulates the production-reference
+  clock rates and explicitly calls out the gap against the original
+  ADR-001 12.8 GB/s claim.
+- **Stays PR #26** (merged 2026-05-06) — Agent 4's day-1 LiteDRAM
+  ECP5 recon. Confirms the upstream PHY is production-mature,
+  integration-only, and pegs the realistic ceiling.
+- **popsolutions/MAST issue #32** — this amendment's tracking
+  ticket (Agent R surfaced from Agent 4 recon).
+- **`project_mission_and_open_fpga_commitment.md`** — closed-PHY
+  paths are out of scope; we move forward with the open ecosystem.
+
+### Cross-stream impact
+
+The Spanker scheduler model (Stream 3) currently uses 12.8 GB/s as
+its memory-bandwidth constant. That constant must be retuned to a
+production-validated number in the rev-A range (1.5-2.4 GB/s, with
+6.4 GB/s as the optimistic open-PHY corner). Tracked separately as
+popsolutions/Spanker issue #14. **No code change in this PR** — this
+ADR amendment is doc-only.
