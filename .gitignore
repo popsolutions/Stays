@@ -3,9 +3,11 @@
 *.kicad_pcb-bak
 *~
 *.lck
+*-backups/
 gerbers/
 fp-info-cache
 *-cache.lib
+_autosave-*
 
 # Python venvs / caches
 .venv/
