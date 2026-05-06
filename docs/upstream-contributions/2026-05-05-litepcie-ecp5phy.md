@@ -2,8 +2,8 @@
 
 # 2026-05-05 — LitePCIe ECP5 PHY contribution
 
-**Status:** Scoping (day-1 recon complete; **scope correction surfaced
-— blocked pending human + Agent R alignment**).
+**Status:** Awaiting upstream feedback (outreach email sent
+2026-05-06; public discussion filed — see link below).
 
 ## Upstream project
 
@@ -161,13 +161,23 @@ prioritisation before any implementation.
 
 ## Upstream link
 
-Not filed yet. Will be added once the path-forward decision lands.
+Public scoping discussion filed as a regular issue (GitHub Discussions
+is not enabled on `enjoy-digital/litepcie`, so the issue tracker was
+used as the fallback public artefact, with `[discussion]` prefix in
+the title to signal intent):
+
+- `https://github.com/enjoy-digital/litepcie/issues/164`
 
 ## Resolution status
 
-- **2026-05-05 (today):** Scoping complete. Scope correction
-  documented. Awaiting human + Agent R direction on whether to
-  continue (and on which sub-option), open upstream dialogue first,
-  or defer.
+- **2026-05-05:** Scoping complete. Scope correction documented.
+  Awaiting human + Agent R direction on whether to continue (and on
+  which sub-option), open upstream dialogue first, or defer.
+- **2026-05-06:** Outreach email sent to
+  `florent@enjoy-digital.fr`. Public GitHub discussion filed at
+  `https://github.com/enjoy-digital/litepcie/issues/164` (filed as an issue with
+  `[discussion]` prefix because Discussions is disabled on the
+  upstream repo). Awaiting maintainer response. Next checkpoint:
+  2026-05-13 (one week).
 
 Authored by Agent 4 (Open FPGA Upstream Contributions).
