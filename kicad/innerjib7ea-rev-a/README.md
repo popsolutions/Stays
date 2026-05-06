@@ -12,7 +12,11 @@ now in this directory:
   20231120 / KiCad 8.0).
 - `innerjib7ea.kicad_pcb` — empty board (sexpr, version 20240108 /
   KiCad 8.0), 2-layer copper stack with the canonical KiCad 8
-  user-layer enumeration; net 0 declared per spec.
+  user-layer enumeration; net 0 declared per spec; a placeholder
+  100 mm × 100 mm square outline on `Edge.Cuts` (KiCad 8 DRC
+  rejects boards with no Edge.Cuts edges — the placeholder
+  satisfies that rule). The real mini-ITX 170 mm × 170 mm
+  envelope replaces it in roadmap item #6 (Layout pass).
 - `fp-lib-table` / `sym-lib-table` — empty per-project library
   tables (version 7) so the project is library-isolated and
   contributors don't depend on each other's global KiCad config.
