@@ -92,12 +92,31 @@ Used for: place & route on ECP5 fabric.
 
 Used for: ECP5 bitstream database + packer.
 
+**Day-1 recon (2026-05-06):** see
+`2026-05-06-prjtrellis-ecp5-85f.md`. The bitstream tooling is
+**production-mature** for ECP5-85F: all three -85F SKUs
+(LFE5U-85F, LFE5UM-85F, LFE5UM5G-85F) are in `prjtrellis-db` with
+full framing data; DCU/SerDes primitives are fuzzed for the 85k
+density (`fuzzers/ECP5/116-midmux-dcu/emux_85k.ncl`); and four
+production -85F-class boards (OrangeCrab, Trellis Board, Versa-ECP5,
+ECPIX-5) ship daily through this flow. LiteICLink's `serdes_ecp5.py`
+already drives 1.25 Gbps SGMII (rev-A inter-card link target rate)
+on Versa-ECP5 and ECPIX-5 in production. No upstream contribution gap
+for rev-A's core feature set; this is an integration-only dependency
+**with watchlist** for the issues below.
+
 | # | Title | Affects rev-A because | Recency |
 |---|---|---|---|
-| 242 | ecppll random (uninitialised?) values in output | We use ecppll for clock synthesis; non-deterministic output is a CI risk | 2024-11 |
-| 246 | LFE5U-45F-6TQ144 EHXPLLL_UR does not work | Different SKU, but raises the question of whether 85F EHXPLLL_UR is exercised | 2025-04 |
-| 160 | PLL --highres results in multiply driven net error | High-resolution PLL output mode | 2021-01 |
+| 242 | ecppll random (uninitialised?) values in output | We use ecppll for clock synthesis; non-deterministic output is a CI risk. **Workaround:** drop `--highres` flag | 2024-11 |
+| 246 | LFE5U-45F-6TQ144 EHXPLLL_UR does not work | Different SKU, but raises the question of whether 85F EHXPLLL_UR is exercised. **Workaround:** avoid UR PLL position | 2025-04 |
+| 160 | PLL --highres results in multiply driven net error | High-resolution PLL output mode. Same workaround as #242 | 2021-01 |
 | 225 | Licensing of timing/resource/nescore.v | Meta but worth tracking given our CERN-OHL-S licensing posture | 2023-06 |
+
+Adjacent (not in prjtrellis itself, but on the same toolchain path):
+
+| # | Repo | Title | Affects rev-A because | Recency |
+|---|---|---|---|---|
+| 860 | nextpnr | Failed to route from PCSCLKDIV primitive on ecp5 | DCU-adjacent: if the inter-card SerDes uses `PCSCLKDIV` for divided clock output, we hit this. Workaround: divide via fabric/PLL | 2021-11 |
 
 ### LiteDRAM (https://github.com/enjoy-digital/litedram)
 
