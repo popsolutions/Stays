@@ -22,7 +22,7 @@ available"):
 
 | FPGA | Open toolchain | DDR support | PCIe | Maturity |
 |---|---|---|---|---|
-| Lattice ECP5-85F | ✅ yosys + nextpnr-ecp5 + prjtrellis (rock solid) | DDR3 only | Gen2 hard IP | mature |
+| Lattice ECP5-85F | ✅ yosys + nextpnr-ecp5 + prjtrellis (rock solid) | DDR3 only | Gen2 hard PCS only (no open-toolchain TLP/DLL/LTSSM stack — see Why GbE below) | mature |
 | Lattice CertusPro-NX | ⚠️ Project Oxide (still maturing) | DDR4 | Gen3 hard IP | nascent |
 | Xilinx Artix-7 | ❌ Vivado | DDR3 only | Gen2 | proprietary |
 | Xilinx Kintex-7 | ❌ Vivado | DDR4 | Gen3 | proprietary |
@@ -36,8 +36,9 @@ available"):
 **Host link (rev A): GbE 1000BASE-T via LiteEth on the ECP5 SerDes pair
 → external SGMII PHY → RJ45 with integrated magnetics.** (Pivot from
 the originally-locked PCIe Gen2; see "Why GbE for rev-A" below. PCIe
-returns in rev B once Agent 4's upstream `ecp5pciephy.py` contribution
-matures and / or CertusPro-NX with native open-toolchain PCIe lands.)
+returns in rev B with CertusPro-NX, where LitePCIe already ships
+`lfcpnxpciephy.py` upstream and the open-toolchain PCIe path is in
+production use.)
 
 **Form factor (rev A): Mini-ITX SBC, 170 mm × 170 mm.** (M.2 22110
 cannot accommodate the DDR3 SO-DIMM connector + RJ45 magnetics +
@@ -76,10 +77,10 @@ moves forward in lockstep with the open FPGA ecosystem maturing:
 - **GbE host link is enough for the rev-A reference workload.**
   TinyLlama-1.1B weight load is 700 MB in ~6 s; token streaming is
   far below 1 Gbps. LiteEth on ECP5 is upstream-mature today, while
-  LitePCIe has no ECP5 PHY (see Agent 4's recon in
-  `docs/upstream-contributions/2026-05-05-litepcie-ecp5phy.md`).
-  Choosing GbE keeps rev A on the open-toolchain path without
-  blocking the MVP on multi-quarter upstream work.
+  LitePCIe has no ECP5 PHY (see Agent 4's rev-A upstream survey,
+  `docs/upstream-contributions/0001-rev-a-known-upstream-issues.md`,
+  "Top finding"). Choosing GbE keeps rev A on the open-toolchain
+  path without blocking the MVP on multi-quarter upstream work.
 
 ### Trade-offs accepted
 
@@ -117,45 +118,52 @@ moves forward in lockstep with the open FPGA ecosystem maturing:
 - popsolutions/InnerJib7EA issue #8 — PCB inter-card connector pinout
 - popsolutions/Stays issue #15 — host link amendment tracking
 - popsolutions/Stays issue #16 — form factor amendment tracking
-- `docs/upstream-contributions/2026-05-05-litepcie-ecp5phy.md` —
-  Agent 4's day-1 recon on the LitePCIe ECP5 PHY scope; informed the
-  GbE pivot rationale below.
+- `docs/upstream-contributions/0001-rev-a-known-upstream-issues.md` —
+  Agent 4's first ecosystem-health survey; the "Top finding (CRITICAL
+  for rev A)" section enumerates the three paths (author the PHY
+  upstream / switch host link off PCIe / defer PCIe to rev B) that
+  the GbE pivot below resolves to.
 
 ## Why GbE for rev-A (host-link pivot rationale)
 
 Per `project_mission_and_open_fpga_commitment.md` —
 *"precarious-but-available beats premium-but-locked"*.
 
-The original ADR-001 framing called the ECP5's PCIe support
-"Gen2 hard IP". Agent 4's day-1 recon
-(`docs/upstream-contributions/2026-05-05-litepcie-ecp5phy.md`)
-clarified that this is technically imprecise: the ECP5 has a hard
-PCS (physical-coding sublayer; SerDes + 8b/10b + framing) but
-**not** a full hard PCIe IP. The PIPE-to-TLP stack — LTSSM, DLL,
-TLP, flow-control credits — must be soft-implemented or wrapped
-from a closed-source Lattice Diamond IP blob. There is no
-open-source ECP5 PCIe controller in production use today, and
-authoring one upstream is multi-quarter work, not multi-sprint.
+The original ADR-001 Context table called the ECP5's PCIe support
+"Gen2 hard IP". The chip does have a hard PCS (physical-coding
+sublayer; SerDes + 8b/10b + framing), but the higher PCIe layers
+— LTSSM, DLL, TLP, flow-control credits — are **not** in a hard
+block; they need a soft controller. The only widely-used soft
+controller for the ECP5 PCIe path comes from Lattice's closed
+Diamond toolchain. There is no open-source ECP5 PCIe controller
+in production use today, and Agent 4's rev-A upstream survey
+(`docs/upstream-contributions/0001-rev-a-known-upstream-issues.md`,
+"Top finding") confirms that LitePCIe has no `ecp5pciephy.py`
+module and no open issues / PRs targeting one.
 
-Three paths were considered:
+Agent 4's survey enumerated three paths; this ADR amendment
+chooses among them:
 
-1. **Block the rev-A MVP for multi-quarter** while Agent 4 lands
-   `ecp5pciephy.py` upstream — contradicts the cooperative's
-   mission of shipping access-relevant hardware fast.
-2. **Wrap Lattice Diamond's closed PCIe IP** — contradicts the
-   open-toolchain commitment.
-3. **GbE for rev A via LiteEth** (upstream-mature on ECP5 today)
-   → external SGMII PHY → RJ45. Technically sufficient for the
-   rev-A reference workload (TinyLlama-1.1B: 700 MB weight load
-   in ~6 s; token streaming ≪ 1 Gbps). Unblocks the MVP timeline.
-   Lets Agent 4's upstream PHY contribution land at its own
-   cadence without holding rev-A hostage.
+1. **Author `ecp5pciephy.py` upstream** — substantial work
+   (multi-quarter, since the contributor would have to wrap or
+   re-implement the LTSSM/DLL/TLP stack against the ECP5 PCS).
+   Blocks the rev-A MVP for that duration.
+2. **Switch rev-A host link off PCIe** — USB3 (FT601) or GbE
+   (LiteEth). Both are upstream-mature on ECP5. Drops bring-up
+   risk; bandwidth becomes the limit.
+3. **Defer PCIe to rev B with CertusPro-NX** — rev B already
+   targets CertusPro-NX, where LitePCIe's `lfcpnxpciephy.py` is
+   shipping and supported.
 
-Path 3 is chosen.
-
-Rev B reverts to PCIe — most likely Gen3 on CertusPro-NX, where
-LitePCIe already ships an `lfcpnxpciephy.py` wrapper and the
-open-toolchain ecosystem is catching up natively.
+This ADR amendment chooses **path 2 + path 3 in combination**:
+GbE for rev A via LiteEth → external SGMII PHY → RJ45 (technically
+sufficient for the rev-A reference workload — TinyLlama-1.1B:
+700 MB weight load in ~6 s; token streaming ≪ 1 Gbps), and PCIe
+returns in rev B on CertusPro-NX where the open-toolchain path
+already exists. Path 1 (`ecp5pciephy.py` upstream) is not a
+prerequisite for either rev; if Agent 4 chooses to author it, it
+becomes a forward-looking gift to the open ecosystem rather than a
+rev-A blocker.
 
 ## Amendments
 

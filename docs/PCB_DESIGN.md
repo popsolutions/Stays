@@ -101,11 +101,11 @@ pour shapes — land in the schematic.)
 
 ## Future revs
 
-- **rev B**: CertusPro-NX (or successor with mature open-toolchain
-  PCIe path) + DDR4 SO-DIMM, PCIe Gen3 host link via Agent 4's
-  upstream `ecp5pciephy.py` contribution and / or CertusPro-NX's
-  native PCIe path. Form factor returns to M.2 as a plug-in compute
-  module on a Mini-ITX (or other) carrier.
+- **rev B**: CertusPro-NX (or successor) + DDR4 SO-DIMM, PCIe Gen3
+  host link via LitePCIe's mature `lfcpnxpciephy.py` wrapper (the
+  open-toolchain CertusPro-NX path already in production use).
+  Form factor returns to M.2 as a plug-in compute module on a
+  Mini-ITX (or other) carrier.
 - **rev C**: DDR5 SO-DIMM. Toolchain trajectory per the open-FPGA
   ecosystem commitment in
   `project_mission_and_open_fpga_commitment.md`.

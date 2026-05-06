@@ -32,16 +32,14 @@ pivot).
 ## Why GbE for rev A (not PCIe)
 
 Per ADR-001's "Why GbE for rev-A" section: the LitePCIe ECP5 PHY
-does not exist upstream and authoring one is multi-quarter work.
-GbE via LiteEth is upstream-mature on ECP5 today and technically
-sufficient for the rev-A reference workload (TinyLlama-1.1B:
-700 MB load in ~6 s; token streaming ≪ 1 Gbps). PCIe Gen3 returns
-in rev B once Agent 4's parallel `ecp5pciephy.py` upstream
-contribution matures and / or CertusPro-NX with native
-open-toolchain PCIe lands.
-
-See `../../docs/upstream-contributions/2026-05-05-litepcie-ecp5phy.md`
-for Agent 4's day-1 recon that informed the pivot.
+does not exist upstream (Agent 4's rev-A upstream survey,
+`../../docs/upstream-contributions/0001-rev-a-known-upstream-issues.md`,
+"Top finding") and authoring one is multi-quarter work. GbE via
+LiteEth is upstream-mature on ECP5 today and technically sufficient
+for the rev-A reference workload (TinyLlama-1.1B: 700 MB load in
+~6 s; token streaming ≪ 1 Gbps). PCIe returns in rev B with
+CertusPro-NX, where LitePCIe's `lfcpnxpciephy.py` wrapper is
+already shipping and supported.
 
 ## Multi-card requirement (non-negotiable)
 
@@ -59,9 +57,11 @@ Sequential PRs land in this directory in approximately this order
 1. **KiCad project skeleton.** Coherent `.kicad_pro` +
    empty-but-valid `.kicad_sch` + empty-but-valid `.kicad_pcb`,
    produced with `kicad-cli` so files round-trip cleanly.
-2. **Schematic capture.** ECP5-85F symbol, power tree
-   (12 V → 3.3 V / 1.8 V / 1.5 V / 1.35 V / 0.75 V), JTAG
-   header, USB-UART bridge.
+2. **Schematic capture.** ECP5-85F symbol; full power tree
+   (12 V → 3.3 V / 2.5 V / 1.8 V / 1.5 V / 1.35 V / 1.0 V / 0.75 V,
+   including the 2.5 V analog and 1.0 V digital rails for the
+   SGMII PHY); GbE chain (LiteEth → ECP5 SerDes → KSZ9031RNX SGMII
+   PHY → magnetics → RJ45); JTAG header; USB-UART bridge.
 3. **DDR3 SO-DIMM connector** + routing-constraint annotation
    (50 Ω single-ended, 100 Ω differential, length-match groups).
 4. **Inter-card connector** (per multi-card requirement).
