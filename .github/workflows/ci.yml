@@ -32,8 +32,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Install KiCad CLI
+      - name: Install KiCad 8 CLI
         run: |
+          # Ubuntu 24.04 ships KiCad 7.0.11 in the default repos, which
+          # lacks `kicad-cli sch erc` and `kicad-cli pcb drc` (added in
+          # KiCad 8.0). Pull KiCad 8 from the official kicad-developers
+          # PPA (ppa:kicad/kicad-8.0-releases) so the ERC/DRC commands
+          # below resolve. Sail rev-A KiCad project files declare KiCad
+          # 8 sexpr versions (20231120 / 20240108) and KiCad 7 cannot
+          # parse them.
+          sudo add-apt-repository --yes ppa:kicad/kicad-8.0-releases
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends kicad
           kicad-cli --version
