@@ -4,12 +4,24 @@
 
 ## Status
 
-**Skeleton.** KiCad project files not yet committed (no
-`.kicad_pro` in this directory yet). This README precedes the
-KiCad project to (a) document the intended scope, (b) make
-ADR-001's locked decision visible at the directory root, and
-(c) enumerate the sequence of follow-up PRs that fill this
-directory.
+**Skeleton landed.** Empty-but-valid KiCad 8 project files are
+now in this directory:
+
+- `innerjib7ea.kicad_pro` — project envelope (JSON, KiCad 8 schema).
+- `innerjib7ea.kicad_sch` — empty root schematic (sexpr, version
+  20231120 / KiCad 8.0).
+- `innerjib7ea.kicad_pcb` — empty board (sexpr, version 20240108 /
+  KiCad 8.0), 2-layer copper stack with the canonical KiCad 8
+  user-layer enumeration; net 0 declared per spec.
+- `fp-lib-table` / `sym-lib-table` — empty per-project library
+  tables (version 7) so the project is library-isolated and
+  contributors don't depend on each other's global KiCad config.
+
+The schematic and PCB are intentionally empty: the goal of this
+PR is a project KiCad 8 opens cleanly and that the
+`kicad-erc-drc` CI job reports clean against. Schematic capture,
+DDR3 SO-DIMM connector, inter-card connector, layer stackup, and
+layout fill the remaining roadmap items below in subsequent PRs.
 
 ## Spec (locked by ADR-001, with 2026-05-05 amendments)
 
@@ -54,9 +66,13 @@ card, but it must be on the board.
 Sequential PRs land in this directory in approximately this order,
 one PR per step:
 
-1. **KiCad project skeleton.** Coherent `.kicad_pro` +
-   empty-but-valid `.kicad_sch` + empty-but-valid `.kicad_pcb`,
-   produced with `kicad-cli` so files round-trip cleanly.
+1. **KiCad project skeleton.** ✅ Landed — see Status above.
+   Files were authored against the published KiCad 8 file-format
+   spec (sexpr-pcb / sexpr-schematic / fp-lib-table /
+   sym-lib-table) because `kicad-cli` is not installed on the
+   contributor workstation; the CI `kicad-erc-drc` job is the
+   round-trip authority and runs `kicad-cli sch erc` and
+   `kicad-cli pcb drc` on the PR.
 2. **Schematic capture.** ECP5-85F symbol; full power tree
    (12 V → 3.3 V / 2.5 V / 1.8 V / 1.5 V / 1.35 V / 1.0 V / 0.75 V,
    including the 2.5 V analog and 1.0 V digital rails for the
