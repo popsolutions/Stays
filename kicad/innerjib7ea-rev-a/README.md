@@ -77,13 +77,32 @@ one PR per step:
    contributor workstation; the CI `kicad-erc-drc` job is the
    round-trip authority and runs `kicad-cli sch erc` and
    `kicad-cli pcb drc` on the PR.
-2. **Schematic capture.** ECP5-85F symbol; full power tree
-   (12 V → 3.3 V / 2.5 V / 1.8 V / 1.35 V / 1.0 V / 0.675 V,
-   including the 2.5 V analog and 1.0 V digital rails for the
-   SGMII PHY); GbE chain (LiteEth → ECP5 SerDes → KSZ9031RNX SGMII
-   PHY → magnetics → RJ45); JTAG header; USB-UART bridge.
-   **Note:** the 1.5 V DDR3 main rail and 0.75 V VTT termination
-   (which earlier drafts of this list assumed) are removed — see
+2. **Schematic capture.** Multi-week effort split into one PR per
+   schematic page for reviewability. Day-1 planning artefacts (the
+   contract that the placement PRs honour) live in:
+   - [`../../docs/hw/schematic-page-breakdown.md`](../../docs/hw/schematic-page-breakdown.md)
+     — the eight pages (P1 block diagram, P2 ECP5-85F core, P3
+     DDR3L SO-DIMM, P4 GbE host link, P5 inter-card connector, P6
+     USB-UART debug + JTAG, P7 power tree, P8 boot flash) and what
+     each page owns.
+   - [`../../docs/hw/symbol-library-inventory.md`](../../docs/hw/symbol-library-inventory.md)
+     — every symbol by source: KiCad std libs vs vendor (Lattice
+     / SnapEDA / Ultra-Librarian) vs hand-authored.
+   - [`../../docs/hw/decoupling-topology.md`](../../docs/hw/decoupling-topology.md)
+     — per-rail decoupling spec for the ECP5-85F per FPGA-TN-02038
+     and FPGA-TN-02206 (bulk + bypass + SerDes-specific filter).
+     Topology only; exact counts deferred to placement.
+
+   Power tree summary (12 V → 3.3 V / 2.5 V / 1.8 V / 1.35 V /
+   1.20 V / 1.0 V / 0.675 V, including the 2.5 V analog and 1.0 V
+   digital rails for the SGMII PHY); GbE chain (LiteEth → ECP5
+   SerDes → SGMII PHY → magnetics → RJ45); JTAG header; USB-UART
+   bridge. Day-1 planning selects **Marvell 88E1512** as the
+   primary SGMII PHY (KSZ9031RNX is the documented substitute) and
+   **FT232HL** as the primary USB-UART bridge (CP2102N is the
+   documented cost-down substitute). **Note:** the 1.5 V DDR3 main
+   rail and 0.75 V VTT termination (which earlier drafts of this
+   list assumed) are removed — see
    [`../../docs/hw/ddr3l-decision.md`](../../docs/hw/ddr3l-decision.md);
    rev-A is DDR3L only, so the module rail is 1.35 V and VTT is
    0.675 V (VDD/2).
