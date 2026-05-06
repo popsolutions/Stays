@@ -103,6 +103,16 @@ Used for: ECP5 bitstream database + packer.
 
 Used for: DDR3 controller for the SO-DIMM.
 
+**Day-1 recon (2026-05-06):** see
+`2026-05-06-litedram-ecp5.md`. The ECP5 DDR3 PHY
+(`litedram/phy/ecp5ddrphy.py`) is **production-mature**: authored by
+David Shah + Florent Kermarrec in 2019, last functional commit
+2022-Q1, used in three reference designs (Lattice Versa-ECP5,
+Trellis Board, OrangeCrab). No upstream contribution gap for rev-A;
+this is an integration-only dependency. Note: ULX3S in the table
+below uses **SDR SDRAM** via `gensdrphy`, not DDR3, so issue #329 is
+not on the ECP5DDRPHY path — the title is misleading.
+
 | # | Title | Affects rev-A because | Recency |
 |---|---|---|---|
 | 194 | ECP5: Use ODDRX1F for address and command bus | Direct rev-A: address/command bus implementation choice for DDR3 on ECP5 | 2020-05 |
@@ -110,7 +120,7 @@ Used for: DDR3 controller for the SO-DIMM.
 | 345 | LiteDRAM DDR3 issues activate command twice for write | DDR3 protocol bug class | 2023-08 |
 | 344 | LiteDRAM DDR3 AXI read data appears on Native port | AXI binding bug; affects Wishbone↔AXI interop choices | 2023-08 |
 | 342 | AXI port write data error | AXI subsystem stability | 2023-06 |
-| 329 | ulx3s example does not work | ULX3S is the canonical ECP5+DDR3 reference platform; broken example is a yellow flag | 2023-04 |
+| 329 | ulx3s example does not work | ULX3S uses SDR (gensdrphy), NOT DDR3 — title misleading; not on the ECP5DDRPHY path | 2023-04 |
 
 ### LitePCIe (https://github.com/enjoy-digital/litepcie)
 
