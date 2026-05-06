@@ -48,10 +48,10 @@ jobs:
             found=1
             echo "::group::ERC $f"
             kicad-cli sch erc \
-              --output "/tmp/$(basename "$f").erc.rpt" \
+              --output "/tmp/$(echo "$f" | tr '/' '_').erc.rpt" \
               --exit-code-violations \
               "$f" || rc=$?
-            cat "/tmp/$(basename "$f").erc.rpt" || true
+            cat "/tmp/$(echo "$f" | tr '/' '_').erc.rpt" || true
             echo "::endgroup::"
           done
           if [ "$found" -eq 0 ]; then
@@ -69,10 +69,10 @@ jobs:
             found=1
             echo "::group::DRC $f"
             kicad-cli pcb drc \
-              --output "/tmp/$(basename "$f").drc.rpt" \
+              --output "/tmp/$(echo "$f" | tr '/' '_').drc.rpt" \
               --exit-code-violations \
               "$f" || rc=$?
-            cat "/tmp/$(basename "$f").drc.rpt" || true
+            cat "/tmp/$(echo "$f" | tr '/' '_').drc.rpt" || true
             echo "::endgroup::"
           done
           if [ "$found" -eq 0 ]; then

@@ -36,8 +36,8 @@ card, but it must be on the board.
 
 ## Roadmap
 
-Sequential PRs land in this directory in approximately this order
-(one PR per step, per `feedback_solo_mode_and_pr_workflow`):
+Sequential PRs land in this directory in approximately this order,
+one PR per step:
 
 1. **KiCad project skeleton.** Coherent `.kicad_pro` +
    empty-but-valid `.kicad_sch` + empty-but-valid `.kicad_pcb`,
