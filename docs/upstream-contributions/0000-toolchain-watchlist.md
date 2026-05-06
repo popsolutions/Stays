@@ -62,9 +62,10 @@ gap in any of the projects above:
 Based on community signal and the rev-A configuration, gaps we expect
 to hit eventually but have **not yet observed**:
 
-- LiteDRAM ECP5 PHY timing closure for `-8` speed grade SO-DIMM at
-  1600 MT/s — historically tight at this corner; may need calibration
-  recipe contribution.
+- LiteDRAM ECP5 PHY timing closure when the FPGA `-8` speed grade
+  (e.g., LFE5UM5G-85F-8BG756I) is asked to drive DDR3-1600 SO-DIMM —
+  historically tight at this corner; may need a calibration recipe
+  contribution.
 - nextpnr-ecp5 routing congestion on dense designs touching the DDR3
   byte-lane region — may need a placement constraint recipe rather
   than an upstream code change.
