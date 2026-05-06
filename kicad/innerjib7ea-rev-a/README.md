@@ -32,7 +32,7 @@ layout fill the remaining roadmap items below in subsequent PRs.
 | Item | Value |
 |------|-------|
 | FPGA | Lattice ECP5-85F (LFE5UM5G-85F-8BG756I) |
-| Memory | DDR3-1600 SO-DIMM, single channel, **acoplável** |
+| Memory | **DDR3L-1600 SO-DIMM (1.35 V, `SSTL135`)**, single channel, **acoplável**. Reference SKU: Crucial CT4G3S160BM (4 GB, 1.35 V). See [`../../docs/hw/ddr3l-decision.md`](../../docs/hw/ddr3l-decision.md) for why DDR3L (not standard DDR3 1.5 V). |
 | Open toolchain | yosys + nextpnr-ecp5 + prjtrellis + LiteDRAM + LiteEth (rev A; LitePCIe in rev B) |
 | Host link | GbE 1000BASE-T via LiteEth + ECP5 SerDes → SGMII PHY → RJ45 (rev A; PCIe returns in rev B) |
 | Form factor | Mini-ITX SBC, 170 mm × 170 mm |
@@ -78,12 +78,21 @@ one PR per step:
    round-trip authority and runs `kicad-cli sch erc` and
    `kicad-cli pcb drc` on the PR.
 2. **Schematic capture.** ECP5-85F symbol; full power tree
-   (12 V → 3.3 V / 2.5 V / 1.8 V / 1.5 V / 1.35 V / 1.0 V / 0.75 V,
+   (12 V → 3.3 V / 2.5 V / 1.8 V / 1.35 V / 1.0 V / 0.675 V,
    including the 2.5 V analog and 1.0 V digital rails for the
    SGMII PHY); GbE chain (LiteEth → ECP5 SerDes → KSZ9031RNX SGMII
    PHY → magnetics → RJ45); JTAG header; USB-UART bridge.
-3. **DDR3 SO-DIMM connector** + routing-constraint annotation
+   **Note:** the 1.5 V DDR3 main rail and 0.75 V VTT termination
+   (which earlier drafts of this list assumed) are removed — see
+   [`../../docs/hw/ddr3l-decision.md`](../../docs/hw/ddr3l-decision.md);
+   rev-A is DDR3L only, so the module rail is 1.35 V and VTT is
+   0.675 V (VDD/2).
+3. **DDR3L SO-DIMM connector** + routing-constraint annotation
    (50 Ω single-ended, 100 Ω differential, length-match groups).
+   IO standard `SSTL135_I` / `SSTL135D_I` per the ECP5 IO bank
+   capability (the chip cannot drive `SSTL15` standard-DDR3 1.5 V
+   without an external level shifter — see
+   [`../../docs/hw/ddr3l-decision.md`](../../docs/hw/ddr3l-decision.md)).
 4. **Inter-card connector** (per multi-card requirement).
 5. **Layer stackup** planning (8-layer for DDR3 controlled
    impedance — see `docs/PCB_DESIGN.md` for the target stackup).
