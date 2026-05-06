@@ -62,16 +62,49 @@ engagement are weaker signal than recent ones.
 
 Used for: RTL synthesis (`synth_ecp5`).
 
+**Day-1 recon (2026-05-06):** see
+`2026-05-06-yosys-ecp5.md`. The ECP5 synthesis backend is
+**production-mature** on yosys v0.64 (released 2026-04-09): `synth_ecp5`
+is a thin wrapper around `synth_lattice -family ecp5` (unification commit
+2023-08-31, `714603b`); every ECP5-85F primitive rev-A needs (LUT4, CCU2C,
+TRELLIS_FF, DP16KD, MULT18X18D, EHXPLLL, ODDRX1F/IDDRX1F, IB/OB/BB) is
+covered; release cadence is monthly; OSS CAD Suite ships daily nightlies
+that pin compatible yosys + nextpnr + prjtrellis HEADs. Every major
+open-FPGA ECP5 board (OrangeCrab, Trellis Board, Versa-ECP5, ECPIX-5,
+ULX3S, Colorlight 5A-75B) ships through `synth_ecp5` end-to-end. No
+upstream contribution gap for rev-A's core feature set; this is an
+integration-only dependency **with watchlist** for the issues below.
+
+**Real risk identified, not in `synth_ecp5` itself:** OSS yosys's
+SystemVerilog-2017 frontend coverage is **partial** — SV interfaces,
+package-with-parameters, and type parameters all have open issues. rev-A
+RTL already side-steps these per the explicit posture in
+`MAST/src/popsolutions/axi4/README.md` ("avoids the SV interface /
+package compatibility issues that some tools still have"). Stream 1 RTL
+authors should hold this line; the escape valve if SV-2017 features ever
+become non-negotiable is **Synlig** (Surelog frontend, Apache-2.0).
+
 | # | Title | Affects rev-A because | Recency |
 |---|---|---|---|
-| 5814 | ECP5 memory_bram has no rule for REGMODE=OUTREG | MAST scratchpads / cache lines using BRAM with output register will hit this | 2026-04 |
+| 5814 | ECP5 memory_bram has no rule for REGMODE=OUTREG | MAST scratchpads / cache lines using BRAM with output register will hit this. **Workaround:** instantiate DP16KD directly | 2026-04 |
 | 4798 | Synthesis with -nowidelut gives drastically better results | QoR knob worth knowing if MAST hits area pressure on -85F | 2024-12 |
 | 4872 | Yosys emits FF that never toggles instead of constant 0 | Synthesis-correctness regression class | 2025-01 |
-| 4349 | Assert failure in synth_{ice40,ecp5} on simple design | Generic synth_ecp5 crash; affects any design that triggers it | 2024-04 |
-| 4237 | ABC9/AIGER crash in synth_ecp5 | Crash in the default ECP5 synthesis flow | 2024-02 |
+| 4349 | Assert failure in synth_{ice40,ecp5} on simple design | Generic synth_ecp5 crash; Linux-only CI sidesteps the Windows path | 2024-04 |
+| 4237 | ABC9/AIGER crash in synth_ecp5 | Crash in the default ECP5 synthesis flow. **Workaround:** `-noabc9` | 2024-02 |
 | 4127 | DSP_A/B_MINWIDTH change causes ABC9 error | Affects any design inferring ECP5 DSP blocks (MAST matrix engine candidate) | 2024-01 |
-| 3008 | ECP5 primitive instantiation 'cells_not_processed' | Hits when manually instantiating ECP5 primitives | 2021-09 |
+| 3008 | ECP5 primitive instantiation 'cells_not_processed' | Hits when manually instantiating ECP5 primitives. **Workaround:** use library cell wrappers | 2021-09 |
 | 3005 | Lattice ECP5: Module FD1P3DX port q error | Same root area; manually instantiated FFs | 2021-09 |
+
+SystemVerilog frontend issues to **avoid**, not just watch:
+
+| # | Title | Avoidance posture for rev-A | Recency |
+|---|---|---|---|
+| 5405 | Interface synthesis bug: logic missing from main eval path | Don't use SV interfaces in module ports | 2025-10 |
+| 3937 | "Failed to resolve identifier" on SV interface element | Don't use SV interfaces in module ports | 2023-09 |
+| 3592 | Wider ports in SV interfaces treated as single bit | Don't use SV interfaces in module ports | 2022-12 |
+| 5533 | `read_verilog` doesn't support imports in packages | Don't put parameters in SV packages | 2025-12 |
+| 4318 | Parameters in other packages | Don't put parameters in SV packages | 2024-04 |
+| 3828 | SV type parameters not supported | Don't use `parameter type T = ...` | 2023-07 |
 
 ### nextpnr-ecp5 (https://github.com/YosysHQ/nextpnr)
 
