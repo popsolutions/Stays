@@ -73,11 +73,14 @@ count; power planes re-split to fit the SGMII PHY rails):
 2. Ground plane
 3. Inner signal 1
 4. Power plane (3.3 V / 2.5 V / 1.8 V split)
-5. Power plane (1.35 V DDR3L+VCCIO / 1.0 V split — note: a single
-   1.35 V rail now feeds both the DDR3L module VDD and the ECP5 IO
-   bank VCCIO (SSTL135). The earlier draft showed a separate
-   1.5 V rail; that rail is removed because rev-A is DDR3L only.
-   See [`hw/ddr3l-decision.md`](hw/ddr3l-decision.md).)
+5. Power plane (1.35 V DDR3L+VCCIO / 1.2 V VCCINT+SerDes / 1.0 V
+   split — a single 1.35 V rail feeds both the DDR3L module VDD
+   and the ECP5 IO bank VCCIO (SSTL135); the 1.2 V pour feeds
+   FPGA core (`VCC`) plus SerDes (`VCCA`, `VCCHTX`) per the
+   ECP5-5G datasheet (FPGA-DS-02012-3.3, Table 3.2). The earlier
+   draft showed a separate 1.5 V rail; that rail is removed
+   because rev-A is DDR3L only. See
+   [`hw/ddr3l-decision.md`](hw/ddr3l-decision.md).)
 6. Inner signal 2
 7. Ground plane
 8. Bottom signal
@@ -97,26 +100,51 @@ count; power planes re-split to fit the SGMII PHY rails):
 
 ### Power tree
 
+Voltages below cite the **ECP5 and ECP5-5G Family Data Sheet
+FPGA-DS-02012-3.3 (Lattice, 2024)**, §3.2 *Recommended Operating
+Conditions* (Table 3.2, p. 51), for the ECP5-5G column — our
+chosen part is `LFE5UM5G-85F-8BG756I` per
+[ADR-001](adr/0001-fpga-target.md).
+
 - 12 V input (ATX 4-pin or barrel jack)
-- 3.3 V step-down — FPGA I/O bank rails (non-DDR banks)
-- 2.5 V step-down — SGMII PHY analog supply (KSZ9031RNX VDDA_2V5)
-- 1.8 V step-down — DDR3L controller logic, FPGA aux bank
+- 3.3 V step-down — FPGA `VCCIO` for 3.3 V banks (non-DDR, non-PHY)
+- **2.5 V step-down — FPGA `VCCAUX` *and* `VCCAUXA`** (datasheet
+  range 2.375–2.625 V, nominal 2.5 V; one rail can feed both per
+  Table 3.2 footnote 2 since they share voltage); also feeds the
+  SGMII PHY analog supply (KSZ9031RNX VDDA_2V5).
+- 1.8 V step-down — DDR3L controller-side logic auxiliary
+  (general-purpose 1.8 V rail; **not** the FPGA aux bank — VCCAUX
+  is 2.5 V per datasheet Table 3.2).
 - **1.35 V step-down — DDR3L module VDD *and* ECP5 IO bank VCCIO
   (SSTL135) for the SO-DIMM byte lanes.** This single rail replaces
   the earlier draft's separate "1.5 V DDR3 main rail" entry. DDR3L
   consumes 1.35 V (`SSTL135`) for both the module VDD and the FPGA
-  IO bank that drives it.
-- 1.35 V (or chip-spec VCCINT) LDO — FPGA core. Final VCCINT value
-  to be confirmed against the LFE5UM5G-85F-8BG756I datasheet during
-  schematic capture (Stays #6); whether VCCINT shares the DDR3L
-  1.35 V rail or has a dedicated supply is a schematic-capture
-  decision, not a doc-only one.
+  IO bank that drives it. (1.35 V is a legal `VCCIO` per Table 3.2:
+  range 1.14–3.465 V.)
+- **1.2 V step-down — FPGA core (`VCC` / VCCINT) *and* SerDes
+  power (`VCCA`, `VCCHTX`).** Datasheet ECP5-5G ranges:
+  `VCC` = 1.14–1.26 V (nom 1.20 V), `VCCA` = 1.164–1.236 V
+  (nom 1.20 V), `VCCHTX` = 1.14–1.26 V (nom 1.20 V). This
+  **replaces the earlier draft's incorrect 1.35 V LDO entry** —
+  1.35 V is well above the 1.26 V max of the recommended
+  operating range for `VCC` on ECP5-5G and would have stressed
+  the part outside spec. Note the standard ECP5UM (non-5G)
+  variant uses 1.1 V (1.045–1.155 V) per the same table; we are
+  not using that variant. SerDes input buffer `VCCHRX` (range
+  0.30–1.26 V) can share the same 1.2 V rail or be biased
+  separately per the *ECP5 and ECP5-5G SerDes/PCS Usage Guide*
+  (FPGA-TN-02206); routing decision deferred to schematic
+  capture.
 - 1.0 V step-down — SGMII PHY digital core (KSZ9031RNX VDDC_1V0)
 - 0.675 V LDO — DDR3L VTT termination (= VDD/2 of the 1.35 V
   module rail; was 0.75 V in the standard-DDR3 draft).
 
-(Topology specifics — buck-converter part choices, bypass caps,
-pour shapes — land in the schematic.)
+(Topology specifics — buck-converter / LDO part choices, bypass
+caps, pour shapes, and whether VCCINT and the SerDes 1.2 V rails
+share a regulator or get separate filtered supplies — land in the
+schematic. The earlier draft specified an LDO for the FPGA core;
+1.2 V from 12 V is more efficiently a step-down regulator at the
+expected core current of an LFE5UM5G-85F.)
 
 ### Bring-up checklist
 
