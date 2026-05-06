@@ -1,0 +1,28 @@
+(kicad_sch
+	(version 20231120)
+	(generator "hand_author")
+	(generator_version "8.0")
+	(uuid "7f352d9b-1fc1-4a2e-9d42-5a8a1385c71f")
+	(paper "A3")
+	(title_block
+		(title "POPC_16A rev-A — P8 Boot Flash")
+		(date "2026-05-06")
+		(rev "A")
+		(company "PopSolutions Cooperative")
+		(comment 1 "Placeholder sub-sheet. Real placement lands in PR #6i.")
+		(comment 2 "Per docs/hw/schematic-page-breakdown.md §P8.")
+	)
+	(lib_symbols)
+	(text "P8 Boot Flash (placeholder)\n\nReal placement lands in PR #6i per\ndocs/hw/schematic-page-breakdown.md §P8.\nFlash: Cypress S25FL128SAGMFI001 quad-SPI 16MB."
+		(exclude_from_sim no)
+		(at 210 148 0)
+		(effects
+			(font (size 2.5 2.5) (italic yes))
+			(justify left bottom)
+		)
+		(uuid "034634e9-549f-4ce5-b63e-bf0169cac132")
+	)
+	(sheet_instances
+		(path "/" (page "8"))
+	)
+)

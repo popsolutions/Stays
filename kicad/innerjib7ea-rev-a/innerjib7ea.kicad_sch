@@ -1,14 +1,254 @@
 (kicad_sch
 	(version 20231120)
-	(generator "eeschema")
+	(generator "hand_author")
 	(generator_version "8.0")
-	(uuid "00000000-0000-0000-0000-000000000000")
-	(paper "A4")
+	(uuid "8ac42a0f-deaf-470c-bcc8-9b92c82edf49")
+	(paper "A3")
+	(title_block
+		(title "POPC_16A rev-A — P1 Block Diagram")
+		(date "2026-05-06")
+		(rev "A")
+		(company "PopSolutions Cooperative")
+		(comment 1 "InnerJib7EA — Lattice ECP5-85F + DDR3L + GbE rev-A")
+		(comment 2 "Hierarchical top sheet (P1). P2-P8 land in subsequent PRs.")
+		(comment 3 "Per docs/hw/schematic-page-breakdown.md (Stays PR #35)")
+		(comment 4 "License: CERN-OHL-S-2.0 (project) — see kicad/innerjib7ea-rev-a/README.md")
+	)
 	(lib_symbols)
-	(symbol_instances)
-	(sheet_instances
-		(path "/"
-			(page "1")
+	(text "POPC_16A rev-A — Block Diagram (P1)"
+		(exclude_from_sim no)
+		(at 210 25 0)
+		(effects
+			(font (size 3.0 3.0) (bold yes))
+			(justify left bottom)
 		)
+		(uuid "be0776a0-1805-450c-9290-291c9e41e800")
+	)
+	(text "Buses shown are inter-sheet contracts; electrical connectivity lands on placement pages P2-P8."
+		(exclude_from_sim no)
+		(at 210 35 0)
+		(effects
+			(font (size 1.5 1.5) (italic yes))
+			(justify left bottom)
+		)
+		(uuid "b34810f5-a84d-451d-9c7d-026c146b5576")
+	)
+	(text "AXI4 / DDR3L\nDQ[15:0], DQS[1:0]_p/n,\nADDR[14:0], BA[2:0],\nCK_p/n, CTRL, ODT, RESET#"
+		(exclude_from_sim no)
+		(at 230 95 0)
+		(effects
+			(font (size 1.27 1.27))
+			(justify left bottom)
+		)
+		(uuid "df6bbeca-dbd8-42f5-a465-3d9acf9ed7fc")
+	)
+	(text "SGMII\nSGMII_TX_p/n, SGMII_RX_p/n,\nMDIO, MDC, PHY_INT#"
+		(exclude_from_sim no)
+		(at 230 130 0)
+		(effects
+			(font (size 1.27 1.27))
+			(justify left bottom)
+		)
+		(uuid "601415de-715a-4a7c-9561-a3a5bf794751")
+	)
+	(text "Inter-card MAST-link\nMAST_TX[3:0]_p/n,\nMAST_RX[3:0]_p/n,\nsideband + I2C"
+		(exclude_from_sim no)
+		(at 230 165 0)
+		(effects
+			(font (size 1.27 1.27))
+			(justify left bottom)
+		)
+		(uuid "c35696d6-59ef-4cbf-a946-253dde6cc6ca")
+	)
+	(text "Power rails\n12V → 3.3V / 2.5V / 1.8V\n/ 1.35V / 1.20V / 1.0V\n/ 0.675V (VTT)"
+		(exclude_from_sim no)
+		(at 130 95 0)
+		(effects
+			(font (size 1.27 1.27))
+			(justify left bottom)
+		)
+		(uuid "3c3584ce-b809-44e3-87a9-0cd2d9fde7b7")
+	)
+	(text "SPI flash bus\nSPI_CLK, SPI_CS#,\nSPI_MOSI, SPI_MISO,\nSPI_WP#, SPI_HOLD#"
+		(exclude_from_sim no)
+		(at 130 130 0)
+		(effects
+			(font (size 1.27 1.27))
+			(justify left bottom)
+		)
+		(uuid "3211a47a-fb72-497c-8424-8c2735634b9b")
+	)
+	(text "JTAG + UART\nTCK, TMS, TDI, TDO,\nDBG_TXD, DBG_RXD"
+		(exclude_from_sim no)
+		(at 130 165 0)
+		(effects
+			(font (size 1.27 1.27))
+			(justify left bottom)
+		)
+		(uuid "31ac5da3-2659-49d7-9db3-80d31908cb20")
+	)
+	(sheet
+		(at 160 110)
+		(size 60 40)
+		(stroke (width 0.5) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "9d93b88c-a1ee-40cd-8803-e89d68343f85")
+		(property "Sheetname" "P2_ECP5_Core"
+			(at 160 109.0 0)
+			(effects (font (size 2.0 2.0) (bold yes)) (justify left bottom))
+		)
+		(property "Sheetfile" "p2_ecp5_core.kicad_sch"
+			(at 160 150.5 0)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "innerjib7ea"
+				(path "/8ac42a0f-deaf-470c-bcc8-9b92c82edf49"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 270 75)
+		(size 60 40)
+		(stroke (width 0.3) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "673f0fd7-1402-4fea-aea3-a0b140daeddb")
+		(property "Sheetname" "P3_DDR3L_SODIMM"
+			(at 270 74.0 0)
+			(effects (font (size 1.6 1.6) (bold yes)) (justify left bottom))
+		)
+		(property "Sheetfile" "p3_ddr3l_sodimm.kicad_sch"
+			(at 270 115.5 0)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "innerjib7ea"
+				(path "/8ac42a0f-deaf-470c-bcc8-9b92c82edf49"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 270 110)
+		(size 60 40)
+		(stroke (width 0.3) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "8b0158d2-e459-4c49-932e-e09384a66a3d")
+		(property "Sheetname" "P4_GbE_HostLink"
+			(at 270 109.0 0)
+			(effects (font (size 1.6 1.6) (bold yes)) (justify left bottom))
+		)
+		(property "Sheetfile" "p4_gbe_hostlink.kicad_sch"
+			(at 270 150.5 0)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "innerjib7ea"
+				(path "/8ac42a0f-deaf-470c-bcc8-9b92c82edf49"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 270 145)
+		(size 60 40)
+		(stroke (width 0.3) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "860242b0-90fc-4c2e-b114-3b30331e6156")
+		(property "Sheetname" "P5_InterCard"
+			(at 270 144.0 0)
+			(effects (font (size 1.6 1.6) (bold yes)) (justify left bottom))
+		)
+		(property "Sheetfile" "p5_intercard.kicad_sch"
+			(at 270 185.5 0)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "innerjib7ea"
+				(path "/8ac42a0f-deaf-470c-bcc8-9b92c82edf49"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 50 75)
+		(size 60 40)
+		(stroke (width 0.3) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "d721d335-5d13-477c-aca4-39777c272ccf")
+		(property "Sheetname" "P7_PowerTree"
+			(at 50 74.0 0)
+			(effects (font (size 1.6 1.6) (bold yes)) (justify left bottom))
+		)
+		(property "Sheetfile" "p7_power_tree.kicad_sch"
+			(at 50 115.5 0)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "innerjib7ea"
+				(path "/8ac42a0f-deaf-470c-bcc8-9b92c82edf49"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 50 110)
+		(size 60 40)
+		(stroke (width 0.3) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "7f352d9b-1fc1-4a2e-9d42-5a8a1385c71f")
+		(property "Sheetname" "P8_BootFlash"
+			(at 50 109.0 0)
+			(effects (font (size 1.6 1.6) (bold yes)) (justify left bottom))
+		)
+		(property "Sheetfile" "p8_boot_flash.kicad_sch"
+			(at 50 150.5 0)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "innerjib7ea"
+				(path "/8ac42a0f-deaf-470c-bcc8-9b92c82edf49"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 50 145)
+		(size 60 40)
+		(stroke (width 0.3) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "4ac6ac42-9053-4fb3-8390-45c43313c4b6")
+		(property "Sheetname" "P6_USB_UART_JTAG"
+			(at 50 144.0 0)
+			(effects (font (size 1.6 1.6) (bold yes)) (justify left bottom))
+		)
+		(property "Sheetfile" "p6_usb_uart_jtag.kicad_sch"
+			(at 50 185.5 0)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+		(instances
+			(project "innerjib7ea"
+				(path "/8ac42a0f-deaf-470c-bcc8-9b92c82edf49"
+					(page "6")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/" (page "1"))
+		(path "/9d93b88c-a1ee-40cd-8803-e89d68343f85" (page "2"))
+		(path "/673f0fd7-1402-4fea-aea3-a0b140daeddb" (page "3"))
+		(path "/8b0158d2-e459-4c49-932e-e09384a66a3d" (page "4"))
+		(path "/860242b0-90fc-4c2e-b114-3b30331e6156" (page "5"))
+		(path "/4ac6ac42-9053-4fb3-8390-45c43313c4b6" (page "6"))
+		(path "/d721d335-5d13-477c-aca4-39777c272ccf" (page "7"))
+		(path "/7f352d9b-1fc1-4a2e-9d42-5a8a1385c71f" (page "8"))
 	)
 )

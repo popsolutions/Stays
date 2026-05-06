@@ -1,0 +1,28 @@
+(kicad_sch
+	(version 20231120)
+	(generator "hand_author")
+	(generator_version "8.0")
+	(uuid "860242b0-90fc-4c2e-b114-3b30331e6156")
+	(paper "A3")
+	(title_block
+		(title "POPC_16A rev-A — P5 Inter-card Connector")
+		(date "2026-05-06")
+		(rev "A")
+		(company "PopSolutions Cooperative")
+		(comment 1 "Placeholder sub-sheet. Real placement lands in PR #6f.")
+		(comment 2 "Per docs/hw/schematic-page-breakdown.md §P5.")
+	)
+	(lib_symbols)
+	(text "P5 Inter-card Connector (placeholder)\n\nReal placement lands in PR #6f per\ndocs/hw/schematic-page-breakdown.md §P5.\nConnector: Hirose FX18-40P-0.8SH (per PR #11)."
+		(exclude_from_sim no)
+		(at 210 148 0)
+		(effects
+			(font (size 2.5 2.5) (italic yes))
+			(justify left bottom)
+		)
+		(uuid "f3490fa5-5a27-423b-af60-53609669542c")
+	)
+	(sheet_instances
+		(path "/" (page "5"))
+	)
+)

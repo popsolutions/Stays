@@ -1,0 +1,28 @@
+(kicad_sch
+	(version 20231120)
+	(generator "hand_author")
+	(generator_version "8.0")
+	(uuid "9d93b88c-a1ee-40cd-8803-e89d68343f85")
+	(paper "A3")
+	(title_block
+		(title "POPC_16A rev-A — P2 ECP5-85F Core")
+		(date "2026-05-06")
+		(rev "A")
+		(company "PopSolutions Cooperative")
+		(comment 1 "Placeholder sub-sheet. Real placement lands in PR #6c.")
+		(comment 2 "Per docs/hw/schematic-page-breakdown.md §P2.")
+	)
+	(lib_symbols)
+	(text "P2 — ECP5-85F core (placeholder)\n\nReal placement lands in PR #6c per\ndocs/hw/schematic-page-breakdown.md §P2."
+		(exclude_from_sim no)
+		(at 210 148 0)
+		(effects
+			(font (size 2.5 2.5) (italic yes))
+			(justify left bottom)
+		)
+		(uuid "0b10067d-50f3-406a-9b8c-1208d5d455c3")
+	)
+	(sheet_instances
+		(path "/" (page "2"))
+	)
+)

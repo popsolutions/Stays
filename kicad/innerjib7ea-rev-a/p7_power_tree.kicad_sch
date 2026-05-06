@@ -1,0 +1,28 @@
+(kicad_sch
+	(version 20231120)
+	(generator "hand_author")
+	(generator_version "8.0")
+	(uuid "d721d335-5d13-477c-aca4-39777c272ccf")
+	(paper "A3")
+	(title_block
+		(title "POPC_16A rev-A — P7 Power Tree")
+		(date "2026-05-06")
+		(rev "A")
+		(company "PopSolutions Cooperative")
+		(comment 1 "Placeholder sub-sheet. Real placement lands in PR #6h.")
+		(comment 2 "Per docs/hw/schematic-page-breakdown.md §P7.")
+	)
+	(lib_symbols)
+	(text "P7 Power Tree (placeholder)\n\nReal placement lands in PR #6h per\ndocs/hw/schematic-page-breakdown.md §P7.\n12V → 7 rails (3.3V/2.5V/1.8V/1.35V/1.20V/1.0V/0.675V)."
+		(exclude_from_sim no)
+		(at 210 148 0)
+		(effects
+			(font (size 2.5 2.5) (italic yes))
+			(justify left bottom)
+		)
+		(uuid "5fbe6dcc-e552-48d7-b6fc-4c6604c764fe")
+	)
+	(sheet_instances
+		(path "/" (page "7"))
+	)
+)

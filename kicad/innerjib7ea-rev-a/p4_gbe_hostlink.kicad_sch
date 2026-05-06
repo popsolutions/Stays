@@ -1,0 +1,28 @@
+(kicad_sch
+	(version 20231120)
+	(generator "hand_author")
+	(generator_version "8.0")
+	(uuid "8b0158d2-e459-4c49-932e-e09384a66a3d")
+	(paper "A3")
+	(title_block
+		(title "POPC_16A rev-A — P4 GbE Host Link")
+		(date "2026-05-06")
+		(rev "A")
+		(company "PopSolutions Cooperative")
+		(comment 1 "Placeholder sub-sheet. Real placement lands in PR #6e.")
+		(comment 2 "Per docs/hw/schematic-page-breakdown.md §P4.")
+	)
+	(lib_symbols)
+	(text "P4 GbE Host Link (placeholder)\n\nReal placement lands in PR #6e per\ndocs/hw/schematic-page-breakdown.md §P4.\nPHY: Marvell 88E1512 (KSZ9031RNX substitute)."
+		(exclude_from_sim no)
+		(at 210 148 0)
+		(effects
+			(font (size 2.5 2.5) (italic yes))
+			(justify left bottom)
+		)
+		(uuid "8322f275-268c-4e87-a69f-4cfbf05e747f")
+	)
+	(sheet_instances
+		(path "/" (page "4"))
+	)
+)

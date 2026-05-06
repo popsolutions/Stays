@@ -1,0 +1,28 @@
+(kicad_sch
+	(version 20231120)
+	(generator "hand_author")
+	(generator_version "8.0")
+	(uuid "4ac6ac42-9053-4fb3-8390-45c43313c4b6")
+	(paper "A3")
+	(title_block
+		(title "POPC_16A rev-A — P6 USB-UART debug + JTAG")
+		(date "2026-05-06")
+		(rev "A")
+		(company "PopSolutions Cooperative")
+		(comment 1 "Placeholder sub-sheet. Real placement lands in PR #6g.")
+		(comment 2 "Per docs/hw/schematic-page-breakdown.md §P6.")
+	)
+	(lib_symbols)
+	(text "P6 USB-UART debug + JTAG (placeholder)\n\nReal placement lands in PR #6g per\ndocs/hw/schematic-page-breakdown.md §P6.\nBridge: FT232HL (CP2102N substitute)."
+		(exclude_from_sim no)
+		(at 210 148 0)
+		(effects
+			(font (size 2.5 2.5) (italic yes))
+			(justify left bottom)
+		)
+		(uuid "20e66f15-282c-451a-a4f8-ad04d80e6ce9")
+	)
+	(sheet_instances
+		(path "/" (page "6"))
+	)
+)
