@@ -17,7 +17,8 @@ are:
 - `docs/upstream-contributions/0001-rev-a-known-upstream-issues.md`
   (the rev-A survey, on `main`).
 - `docs/upstream-contributions/2026-05-05-litepcie-ecp5phy.md` (the
-  contribution log entry in scoping state, currently on PR #17).
+  contribution log entry in scoping state, recreated on PR #22 after
+  PR #17 was closed without merge — see issue #20).
 - popsolutions/MAST#13 (the cross-stream issue documenting the
   decision).
 
@@ -149,10 +150,10 @@ PopSolutions Cooperative
 - Verify the public link in section "Our public scoping notes" still
   resolves to the survey doc on `main` at the moment you send (the
   doc is on `main` as of 2026-05-05 via PR #3).
-- If you want a public artefact later, the contribution-log PR
-  (popsolutions/Stays#17) is where the response gets summarised,
-  respectfully and without quoting Florent's reply verbatim unless he
-  authorises it.
+- If you want a public artefact later, the contribution-log file
+  (recreated via popsolutions/Stays#22 after the original PR #17 was
+  lost) is where the response gets summarised, respectfully and
+  without quoting Florent's reply verbatim unless he authorises it.
 - If you adapt the subject line, keep three signals: ECP5/Lattice,
   scoping/exploratory, small-cooperative (so it stands apart from
   vendor outreach in his inbox).
