@@ -183,6 +183,29 @@ ECP5-relevant open issues exist. The Xilinx-centric issues
 (`#162`, `#150`, `#149`, `#147`, etc.) do not apply to rev A given
 the missing-PHY blocker.
 
+### LiteEth (https://github.com/enjoy-digital/liteeth)
+
+Used for: GbE host link via 88E1512 Marvell PHY → SGMII → ECP5
+SerDes (rev-A's chosen path forward after PCIe was deferred to rev-B).
+
+**Day-1 recon (2026-05-06):** see
+`2026-05-06-liteeth-ecp5-sgmii.md`. The LiteEth MAC + IP/UDP stack and
+the LiteICLink-driven `serdes_ecp5.py` SGMII path are
+**production-mature**: two -85F-class reference designs (Lattice
+Versa-ECP5 and ECPIX-5) ship daily through this exact path; community
+bring-up reports 800–940 Mbps measured on GbE line rate. No upstream
+contribution gap for rev-A's core feature set; this is an
+integration-only dependency.
+
+**Cross-stream constraint flagged:** the GbE host link is the
+**slowest hop in the rev-A bandwidth hierarchy** (~100 MB/s after
+IP/UDP overhead vs ~500 MB/s inter-card vs ~2 GB/s local DDR). The
+Spanker scheduler bandwidth model needs a third constant
+`HOST_LINK_BW_BYTES_PER_SEC = 100_000_000` so collective ops that
+round-trip through the host (model loading, gradient checkpointing,
+dataset streaming) get realistic latency estimates. Filed as a
+cross-stream Spanker issue; Stream 3 owns the implementation.
+
 ## What is NOT in this survey (deliberately)
 
 - Closed issues — too noisy without targeted reproducer work; revisit
