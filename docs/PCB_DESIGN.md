@@ -56,10 +56,24 @@ host link to a Mini-ITX (or other) carrier board.
 
 ```
 LiteEth ── ECP5 SerDes pair ── SGMII PHY chip ── magnetics ── RJ45 ── 1000BASE-T
-(fabric)   (1.25 GBaud)        (Microchip
-                                KSZ9031RNX
-                                or equivalent)
+(fabric)   (1.25 GBaud)        (Marvell Alaska
+                                88E1512
+                                or KSZ9031RNX
+                                substitute)
 ```
+
+**Primary PHY: Marvell Alaska 88E1512** (32-pin QFN, 5×5 mm).
+Selected for broad LATAM distributor stocking (Mouser, Digi-Key,
+Arrow), smaller package than the alternative (32-pin vs 48-pin
+QFN), and an NDA-free public datasheet (`88E151x_PB.pdf`).
+
+**Documented substitute: Microchip KSZ9031RNX** (48-pin QFN). The
+2.5 V analog and 1.0 V digital-core rails are fungible between the
+two parts at this voltage class, so no power-tree change is needed
+if a builder swaps. See
+[`hw/schematic-page-breakdown.md`](hw/schematic-page-breakdown.md)
+§P4 (Stays PR #35) for the full criteria-based selection rationale
+and the swap procedure that placement PR P4 will codify.
 
 The SGMII PHY chip needs **2.5 V** (analog) and **1.0 V** (digital
 core) rails, both added to the rev-A power tree below.
@@ -111,7 +125,8 @@ chosen part is `LFE5UM5G-85F-8BG756I` per
 - **2.5 V step-down — FPGA `VCCAUX` *and* `VCCAUXA`** (datasheet
   range 2.375–2.625 V, nominal 2.5 V; one rail can feed both per
   Table 3.2 footnote 2 since they share voltage); also feeds the
-  SGMII PHY analog supply (KSZ9031RNX VDDA_2V5).
+  SGMII PHY analog supply (88E1512 AVDD25, or KSZ9031RNX VDDA_2V5
+  substitute).
 - 1.8 V step-down — DDR3L controller-side logic auxiliary
   (general-purpose 1.8 V rail; **not** the FPGA aux bank — VCCAUX
   is 2.5 V per datasheet Table 3.2).
@@ -135,7 +150,8 @@ chosen part is `LFE5UM5G-85F-8BG756I` per
   separately per the *ECP5 and ECP5-5G SerDes/PCS Usage Guide*
   (FPGA-TN-02206); routing decision deferred to schematic
   capture.
-- 1.0 V step-down — SGMII PHY digital core (KSZ9031RNX VDDC_1V0)
+- 1.0 V step-down — SGMII PHY digital core (88E1512 DVDD, or
+  KSZ9031RNX VDDC_1V0 substitute)
 - 0.675 V LDO — DDR3L VTT termination (= VDD/2 of the 1.35 V
   module rail; was 0.75 V in the standard-DDR3 draft).
 
